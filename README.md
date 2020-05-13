@@ -100,8 +100,7 @@ LIMIT 1;
 ```
 SELECT `ospite_id`, COUNT(`ospite_id`) as `numero_prenotazioni`, `ospiti`.`name`, `ospiti`.`lastname`
 FROM `prenotazioni_has_ospiti`
-INNER JOIN `ospiti`
-ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`
+INNER JOIN `ospiti` ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`
 GROUP BY `ospite_id`
 HAVING COUNT(`ospite_id`) > 2
 ORDER by COUNT(`ospite_id`) DESC;
@@ -110,48 +109,38 @@ ORDER by COUNT(`ospite_id`) DESC;
 ```
 SELECT `prenotazioni_has_ospiti`.`prenotazione_id`, `ospiti`.`id` as `ospiti_id`, `ospiti`.`name`, `ospiti`.`lastname`
 FROM `prenotazioni_has_ospiti`
-INNER JOIN `ospiti`
-ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`;
+INNER JOIN `ospiti` ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`;
 ```
 - Stampare Nome, Cognome, Prezzo e Pagante per tutte le prenotazioni fatte a Maggio 2018
 ```
 SELECT `prenotazioni_has_ospiti`.`id`, `ospiti`.`name`, `ospiti`.`lastname`, `pagamenti`.`price`, `paganti`.`name` as `name_pagante`, `paganti`.`lastname` as `lastname_pagante`, `prenotazioni_has_ospiti`.`created_at`
 FROM `prenotazioni_has_ospiti`
-INNER JOIN `ospiti`
-ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`
-INNER JOIN `pagamenti`
-ON `prenotazioni_has_ospiti`.`prenotazione_id` = `pagamenti`.`prenotazione_id`
-INNER JOIN `paganti`
-ON `pagamenti`.`pagante_id` = `paganti`.`id`
+INNER JOIN `ospiti` ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`
+INNER JOIN `pagamenti` ON `prenotazioni_has_ospiti`.`prenotazione_id` = `pagamenti`.`prenotazione_id`
+INNER JOIN `paganti` ON `pagamenti`.`pagante_id` = `paganti`.`id`
 HAVING YEAR(`prenotazioni_has_ospiti`.`created_at`) = '2018' AND MONTH(`prenotazioni_has_ospiti`.`created_at`) = '05';
 ```
 - Fai la somma di tutti i prezzi delle prenotazioni per le stanze del primo piano
 ```
 SELECT SUM(`pagamenti`.`price`) 
 FROM `stanze` 
-INNER JOIN `prenotazioni`
-ON `stanze`.`id` = `prenotazioni`.`stanza_id`
-INNER JOIN `pagamenti`
-ON `prenotazioni`.`id` = `pagamenti`.`prenotazione_id`
+INNER JOIN `prenotazioni` ON `stanze`.`id` = `prenotazioni`.`stanza_id`
+INNER JOIN `pagamenti` ON `prenotazioni`.`id` = `pagamenti`.`prenotazione_id`
 WHERE `stanze`.`floor` = '1';
 ```
 - Prendi i dati di fatturazione per la prenotazione con id=7
 ```
 SELECT `prenotazioni`.`id` as 'prenotazione_id', `paganti`.`name`, `paganti`.`lastname`, `paganti`.`address`
 FROM `prenotazioni`
-INNER JOIN `prenotazioni_has_ospiti`
-ON `prenotazioni`.`id` = `prenotazioni_has_ospiti`.`prenotazione_id`
-INNER JOIN `pagamenti`
-ON `prenotazioni`.`id` = `pagamenti`.`prenotazione_id`
-INNER JOIN `paganti`
-ON `pagamenti`.`pagante_id` = `paganti`.`id`
+INNER JOIN `prenotazioni_has_ospiti` ON `prenotazioni`.`id` = `prenotazioni_has_ospiti`.`prenotazione_id`
+INNER JOIN `pagamenti` ON `prenotazioni`.`id` = `pagamenti`.`prenotazione_id`
+INNER JOIN `paganti` ON `pagamenti`.`pagante_id` = `paganti`.`id`
 WHERE `prenotazioni`.`id` = '7';
 ```
 - Le stanze sono state tutte prenotate almeno una volta? (Visualizzare le stanze non ancora prenotate)
 ```
 SELECT `stanze`.`room_number` 
 FROM `stanze`
-LEFT JOIN `prenotazioni`
-ON `stanze`.`id` = `prenotazioni`.`stanza_id`
+LEFT JOIN `prenotazioni` ON `stanze`.`id` = `prenotazioni`.`stanza_id`
 WHERE ISNULL(`prenotazioni`.`stanza_id`);
 ```
