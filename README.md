@@ -103,7 +103,7 @@ FROM `prenotazioni_has_ospiti`
 INNER JOIN `ospiti` ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`
 GROUP BY `ospite_id`
 HAVING COUNT(`ospite_id`) > 2
-ORDER by COUNT(`ospite_id`) DESC;
+ORDER BY COUNT(`ospite_id`) DESC;
 ```
 - Stampare tutti gli ospiti per ogni prenotazione
 ```
@@ -118,7 +118,7 @@ FROM `prenotazioni_has_ospiti`
 INNER JOIN `ospiti` ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`
 INNER JOIN `pagamenti` ON `prenotazioni_has_ospiti`.`prenotazione_id` = `pagamenti`.`prenotazione_id`
 INNER JOIN `paganti` ON `pagamenti`.`pagante_id` = `paganti`.`id`
-HAVING YEAR(`prenotazioni_has_ospiti`.`created_at`) = '2018' AND MONTH(`prenotazioni_has_ospiti`.`created_at`) = '05';
+WHERE YEAR(`prenotazioni_has_ospiti`.`created_at`) = '2018' AND MONTH(`prenotazioni_has_ospiti`.`created_at`) = '05';
 ```
 - Fai la somma di tutti i prezzi delle prenotazioni per le stanze del primo piano
 ```
@@ -130,9 +130,8 @@ WHERE `stanze`.`floor` = '1';
 ```
 - Prendi i dati di fatturazione per la prenotazione con id=7
 ```
-SELECT `prenotazioni`.`id` as 'prenotazione_id', `paganti`.`name`, `paganti`.`lastname`, `paganti`.`address`
+SELECT `prenotazioni`.`id` as 'prenotazione_id', `paganti`.`name`, `paganti`.`lastname`, `paganti`.`address`, `pagamenti`.`price`
 FROM `prenotazioni`
-INNER JOIN `prenotazioni_has_ospiti` ON `prenotazioni`.`id` = `prenotazioni_has_ospiti`.`prenotazione_id`
 INNER JOIN `pagamenti` ON `prenotazioni`.`id` = `pagamenti`.`prenotazione_id`
 INNER JOIN `paganti` ON `pagamenti`.`pagante_id` = `paganti`.`id`
 WHERE `prenotazioni`.`id` = '7';
